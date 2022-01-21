@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<title>Page Title</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="">
+<style>
+</style>
+
+<body>
+
+    <div id="app">
+        <h1 v-text="appName"></h1>
+        <hr>
+        <!-- <div>{{teamAway}} vs. {{teamHome}}</div> -->
+        <team-matchup :away="teamAway" :home="teamHome"></team-matchup>
+        <hr>
+        <h2>Score</h2>
+        <div class="score">
+            <div>Away {{scoreData.runsAway}}</div>
+            <div>Home {{scoreData.runsHome}}</div>
+            <div>Inn: {{scoreData.inning}} Outs: {{scoreData.outs}}</div>
+            <div>1st: {{scoreData.base1}} 2nd: {{scoreData.base2}} 3rd: {{scoreData.base3}}</div>
+        </div>
+        <hr>
+        <div class="matchup">
+            <div v-html="nowBattingDetail"></div>
+        </div>
+        <hr>
+        <button v-if="!gameOver" @click="outcome()">Go!</button>
+        <div>{{lastOutcome}}</div>
+        <div>Game Over? {{gameOver}}</div>
+        <hr>
+        <table cellpadding="3" border=1>
+            <tr>
+                <th v-html="teamAway"></th>
+                <th v-html="teamHome"></th>
+            </tr>
+            <tr>
+                <td>
+                    <div v-for="(batter, index) in lineups.away">
+                        <div v-if="index===lineupPositionAway"><b>{{batter}}</b></div>
+                        <div v-else>{{batter}}</div>
+                    </div>
+                </td>
+                <td>
+                    <div v-for="(batter, index) in lineups.home">
+                        <div v-if="index===lineupPositionHome"><b>{{batter}}</b></div>
+                        <div v-else>{{batter}}</div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <script src="https://unpkg.com/vue@3.0.7/dist/vue.global.js"></script>
+    <script>
+        //set app options
+        let scoreData = {
+            runsHome: 0,
+            runsAway: 0,
+            inning: 1,
+            inningTop: true,
+            outs: 0,
+            base1: 0,
+            base2: 0,
+            base3: 0,
+        }
+
+        let lineups = {
+            home: ['Springer', 'Bichette', 'Guererro', 'Hernandez', 'Guriel', 'Grichuk', 'Biggio', 'Espinal', 'Jansen'],
+            away: ['LeMathiue', 'Judge', 'Rizzon', 'Stanton', 'Gallo', 'Sanchez', 'Urshela', 'Torres', 'Gardner'],
+        }
+
+        const BaseballSimApp = {
+            data() {
+                return {
+                    appName: 'Baseball Sim',
+                    teamHome: 'Toronto',
+                    teamAway: 'New York',
+                    scoreData: scoreData,
+                    lineups: lineups,
+                    lineupPositionHome: 0,
+                    lineupPositionAway: 0,
+                    nowBatting: 'away',
+                    lastOutcome: 'Welcome to the game!',
+                    gameOver: false,
+                };
+            },
+            methods: {
+                outcome() {
+                    this.lastOutcome = this.generateOutcome();
+                    this.updateGameData();
+                    this.checkGameOver();
+                },
+                generateOutcome() {
+                    const rand = Math.random();
+                    const freq = {
+                        hr: .05,
+                        t: .01,
+                        d: .06,
+                        s: .15,
+                        bb: .10
+                    }
+                    let outcome = "";
+                    if (rand > (1 - freq.hr)) {
+                        outcome = "HR";
+                    } else if (rand > (1 - freq.hr - freq.t)) {
+                        outcome = "3B";
+                    } else if (rand > (1 - freq.hr - freq.t - freq.d)) {
+                        outcome = "2B";
+                    } else if (rand > (1 - freq.hr - freq.t - freq.d - freq.s)) {
+                        outcome = "1B";
+                    } else if (rand > (1 - freq.hr - freq.t - freq.d - freq.s - freq.bb)) {
+                        outcome = "BB";
+                    } else {
+                        outcome = "OUT"
+                    }
+                    return outcome;
+                },
+                updateGameData() {
+                    if (this.nowBatting === 'away') {
+                        if (this.lineupPositionAway === 8) {
+                            this.lineupPositionAway = 0;
+                        } else {
+                            this.lineupPositionAway++;
+                        }
+                    } else {
+                        if (this.lineupPositionHome === 8) {
+                            this.lineupPositionHome = 0;
+                        } else {
+                            this.lineupPositionHome++;
+                        }
+                    }
+                    if (this.lastOutcome === "OUT") {
+                        this.scoreData.outs++;
+                        if (this.scoreData.outs % 3 === 0) {
+                            this.scoreData.outs = 0;
+                            this.scoreData.base3 = 0;
+                            this.scoreData.base2 = 0;
+                            this.scoreData.base1 = 0;
+                            if (this.nowBatting === 'away') {
+                                this.nowBatting = 'home';
+                                this.scoreData.inningTop = false;
+                            } else {
+                                this.nowBatting = 'away';
+                                this.scoreData.inningTop = true;
+                                this.scoreData.inning++;
+                            }
+                        }
+                    }
+                    if (this.lastOutcome === "HR") {
+                        const runsOnPlay = this.scoreData.base1 + this.scoreData.base2 + this.scoreData.base3 + 1;
+                        this.scoreData.base3 = 0;
+                        this.scoreData.base2 = 0;
+                        this.scoreData.base1 = 0;
+                        if (this.nowBatting === 'away') {
+                            this.scoreData.runsAway += runsOnPlay;
+                        } else {
+                            this.scoreData.runsHome += runsOnPlay;
+                        }
+                    }
+                    if (this.lastOutcome === "3B") {
+                        const runsOnPlay = this.scoreData.base1 + this.scoreData.base2 + this.scoreData.base3;
+                        this.scoreData.base3 = 1;
+                        this.scoreData.base2 = 0;
+                        this.scoreData.base1 = 0;
+                        if (this.nowBatting === 'away') {
+                            this.scoreData.runsAway += runsOnPlay;
+                        } else {
+                            this.scoreData.runsHome += runsOnPlay;
+                        }
+                    }
+                    if (this.lastOutcome === "2B") {
+                        const runsOnPlay = this.scoreData.base2 + this.scoreData.base3;
+                        this.scoreData.base3 = this.scoreData.base1;
+                        this.scoreData.base2 = 1;
+                        this.scoreData.base1 = 0;
+                        if (this.nowBatting === 'away') {
+                            this.scoreData.runsAway += runsOnPlay;
+                        } else {
+                            this.scoreData.runsHome += runsOnPlay;
+                        }
+                    }
+                    if (this.lastOutcome === "1B") {
+                        const runsOnPlay = this.scoreData.base3;
+                        this.scoreData.base3 = this.scoreData.base2;
+                        this.scoreData.base2 = this.scoreData.base1;
+                        this.scoreData.base1 = 1;
+                        if (this.nowBatting === 'away') {
+                            this.scoreData.runsAway += runsOnPlay;
+                        } else {
+                            this.scoreData.runsHome += runsOnPlay;
+                        }
+                    }
+                    if (this.lastOutcome === "BB") {
+                        const runsOnPlay = 0;
+                        if (this.scoreData.base1 && this.scoreData.base2 && this.scoreData.base3) {
+                            runsOnPlay = 1;
+                        }
+                        if (this.scoreData.base1 && this.scoreData.base2) {
+                            this.scoreData.base3 = this.scoreData.base2;
+                        }
+                        if (this.scoreData.base1) {
+                            this.scoreData.base2 = this.scoreData.base1;
+                        }
+                        this.scoreData.base1 = 1;
+                        if (this.nowBatting === 'away') {
+                            this.scoreData.runsAway += runsOnPlay;
+                        } else {
+                            this.scoreData.runsHome += runsOnPlay;
+                        }
+                    }
+                },
+                checkGameOver() {
+                    if (this.scoreData.inning > 9) {
+                        this.gameOver = true;
+                        this.scoreData.inning = 0;
+                    }
+                }
+            },
+            computed: {
+                nowBattingDetail() {
+                    let currentBatter = "Now Batting: "
+                    if (this.nowBatting === 'away') {
+                        currentBatter += `Away ${this.lineupPositionAway + 1}`
+                    } else {
+                        currentBatter += `Home ${this.lineupPositionHome + 1}`
+                    }
+                    return currentBatter;
+                },
+            }
+        };
+
+        //create the app
+        const app = Vue.createApp(BaseballSimApp);
+
+        //register any components
+        app.component('team-matchup', {
+            template: `<div>{{away}} vs. {{home}}</div>`,
+            name: 'teamMatchup',
+            props: ['away', 'home'],
+        })
+
+        //Mount the app
+        app.mount("#app");
+
+    </script>
+</body>
+
+</html>
