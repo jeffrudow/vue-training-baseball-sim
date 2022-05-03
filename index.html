@@ -262,11 +262,7 @@
             computed: {
                 nowBattingDetail() {
                     let currentBatter = "Now Batting: "
-                    if (this.nowBatting === 'away') {
-                        currentBatter += `Away ${this.lineupPosition.away + 1}`
-                    } else {
-                        currentBatter += `Home ${this.lineupPosition.home + 1}`
-                    }
+                    currentBatter += `${this.nowBatting} - ${this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].name}`
                     return currentBatter;
                 },
             }
