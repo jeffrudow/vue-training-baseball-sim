@@ -39,16 +39,23 @@
             <tr>
                 <td>
                     <div v-for="(batter, index) in lineups.away">
-                        <div v-if="index===lineupPosition.away"><b>{{batter.name}}</b> pa: {{batter.PA}} h: {{batter.H}}
+                        <div v-if="index===lineupPosition.away"><b>{{batter.name}}</b> ab: {{batter.AB}} h: {{batter.H}}
+                            d: {{batter.D}} t: {{batter.T}} hr: {{batter.HR}} bb: {{batter.BB}}
                         </div>
-                        <div v-else>{{batter.name}} pa: {{batter.PA}} h: {{batter.H}}</div>
+                        <div v-else>{{batter.name}} ab: {{batter.AB}} h: {{batter.H}} d: {{batter.D}} t: {{batter.T}}
+                            hr: {{batter.HR}}
+                            bb: {{batter.BB}}</div>
                     </div>
                 </td>
                 <td>
                     <div v-for="(batter, index) in lineups.home">
-                        <div v-if="index===lineupPosition.home"><b>{{batter.name}}</b> pa: {{batter.PA}} h: {{batter.H}}
+                        <div v-if="index===lineupPosition.home"><b>{{batter.name}}</b> ab: {{batter.AB}} h: {{batter.H}}
+                            d: {{batter.D}}
+                            t: {{batter.T}} hr: {{batter.HR}} bb: {{batter.BB}}
                         </div>
-                        <div v-else>{{batter.name}} pa: {{batter.PA}} h: {{batter.H}}</div>
+                        <div v-else>{{batter.name}} ab: {{batter.AB}} h: {{batter.H}} d: {{batter.D}} t: {{batter.T}}
+                            hr: {{batter.HR}}
+                            bb: {{batter.BB}}</div>
                     </div>
                 </td>
             </tr>
@@ -70,26 +77,26 @@
 
         let lineups = {
             home: [
-                { name: 'Springer', PA: 0, H: 0 },
-                { name: 'Bichette', PA: 0, H: 0 },
-                { name: 'Guerrero', PA: 0, H: 0 },
-                { name: 'Hernandez', PA: 0, H: 0 },
-                { name: 'Gurriel', PA: 0, H: 0 },
-                { name: 'Tapia', PA: 0, H: 0 },
-                { name: 'Chapman', PA: 0, H: 0 },
-                { name: 'Espinal', PA: 0, H: 0 },
-                { name: 'Jansen', PA: 0, H: 0 },
+                { name: 'Springer', AB: 0, H: 0, D: 0, T: 0, HR: 0, BB: 0 },
+                { name: 'Bichette', AB: 0, H: 0, D: 0, T: 0, HR: 0, BB: 0 },
+                { name: 'Guerrero', AB: 0, H: 0, D: 0, T: 0, HR: 0, BB: 0 },
+                { name: 'Hernandez', AB: 0, H: 0, D: 0, T: 0, HR: 0, BB: 0 },
+                { name: 'Gurriel', AB: 0, H: 0, D: 0, T: 0, HR: 0, BB: 0 },
+                { name: 'Tapia', AB: 0, H: 0, D: 0, T: 0, HR: 0, BB: 0 },
+                { name: 'Chapman', AB: 0, H: 0, D: 0, T: 0, HR: 0, BB: 0 },
+                { name: 'Espinal', AB: 0, H: 0, D: 0, T: 0, HR: 0, BB: 0 },
+                { name: 'Jansen', AB: 0, H: 0, D: 0, T: 0, HR: 0, BB: 0 },
             ],
             away: [
-                { name: 'LeMahieu', PA: 0, H: 0 },
-                { name: 'Judge', PA: 0, H: 0 },
-                { name: 'Rizzo', PA: 0, H: 0 },
-                { name: 'Stanton', PA: 0, H: 0 },
-                { name: 'Donaldson', PA: 0, H: 0 },
-                { name: 'Hicks', PA: 0, H: 0 },
-                { name: 'Gallo', PA: 0, H: 0 },
-                { name: 'Kiner-Falefa', PA: 0, H: 0 },
-                { name: 'Higashioka', PA: 0, H: 0 },
+                { name: 'LeMahieu', AB: 0, H: 0, D: 0, T: 0, HR: 0, BB: 0 },
+                { name: 'Judge', AB: 0, H: 0, D: 0, T: 0, HR: 0, BB: 0 },
+                { name: 'Rizzo', AB: 0, H: 0, D: 0, T: 0, HR: 0, BB: 0 },
+                { name: 'Stanton', AB: 0, H: 0, D: 0, T: 0, HR: 0, BB: 0 },
+                { name: 'Donaldson', AB: 0, H: 0, D: 0, T: 0, HR: 0, BB: 0 },
+                { name: 'Hicks', AB: 0, H: 0, D: 0, T: 0, HR: 0, BB: 0 },
+                { name: 'Gallo', AB: 0, H: 0, D: 0, T: 0, HR: 0, BB: 0 },
+                { name: 'Kiner-Falefa', AB: 0, H: 0, D: 0, T: 0, HR: 0, BB: 0 },
+                { name: 'Higashioka', AB: 0, H: 0, D: 0, T: 0, HR: 0, BB: 0 },
             ],
         }
 
@@ -145,6 +152,7 @@
                 updateGameData() {
 
                     if (this.lastOutcome === "OUT") {
+                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].AB++;
                         this.scoreData.outs++;
                         if (this.scoreData.outs % 3 === 0) {
                             this.scoreData.outs = 0;
@@ -162,7 +170,9 @@
                         }
                     }
                     if (this.lastOutcome === "HR") {
+                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].AB++;
                         this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].H++;
+                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].HR++;
                         const runsOnPlay = this.scoreData.base1 + this.scoreData.base2 + this.scoreData.base3 + 1;
                         this.scoreData.base3 = 0;
                         this.scoreData.base2 = 0;
@@ -174,7 +184,9 @@
                         }
                     }
                     if (this.lastOutcome === "3B") {
+                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].AB++;
                         this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].H++;
+                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].T++;
                         const runsOnPlay = this.scoreData.base1 + this.scoreData.base2 + this.scoreData.base3;
                         this.scoreData.base3 = 1;
                         this.scoreData.base2 = 0;
@@ -186,7 +198,9 @@
                         }
                     }
                     if (this.lastOutcome === "2B") {
+                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].AB++;
                         this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].H++;
+                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].D++;
                         const runsOnPlay = this.scoreData.base2 + this.scoreData.base3;
                         this.scoreData.base3 = this.scoreData.base1;
                         this.scoreData.base2 = 1;
@@ -198,6 +212,7 @@
                         }
                     }
                     if (this.lastOutcome === "1B") {
+                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].AB++;
                         this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].H++;
                         const runsOnPlay = this.scoreData.base3;
                         this.scoreData.base3 = this.scoreData.base2;
@@ -210,6 +225,7 @@
                         }
                     }
                     if (this.lastOutcome === "BB") {
+                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].BB++;
                         const runsOnPlay = 0;
                         if (this.scoreData.base1 && this.scoreData.base2 && this.scoreData.base3) {
                             runsOnPlay = 1;
@@ -229,7 +245,6 @@
                     }
 
                     //increment lineup position
-                    this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].PA++;
                     if (this.lineupPosition[this.nowBatting] === 8) {
                         this.lineupPosition[this.nowBatting] = 0;
                     } else {
@@ -248,9 +263,9 @@
                 nowBattingDetail() {
                     let currentBatter = "Now Batting: "
                     if (this.nowBatting === 'away') {
-                        currentBatter += `Away ${this.lineupPositionAway + 1}`
+                        currentBatter += `Away ${this.lineupPosition.away + 1}`
                     } else {
-                        currentBatter += `Home ${this.lineupPositionHome + 1}`
+                        currentBatter += `Home ${this.lineupPosition.home + 1}`
                     }
                     return currentBatter;
                 },
