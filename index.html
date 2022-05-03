@@ -39,14 +39,14 @@
             <tr>
                 <td>
                     <div v-for="(batter, index) in lineups.away">
-                        <div v-if="index===lineupPositionAway"><b>{{batter}}</b></div>
-                        <div v-else>{{batter}}</div>
+                        <div v-if="index===lineupPositionAway"><b>{{batter.name}}</b></div>
+                        <div v-else>{{batter.name}}</div>
                     </div>
                 </td>
                 <td>
                     <div v-for="(batter, index) in lineups.home">
-                        <div v-if="index===lineupPositionHome"><b>{{batter}}</b></div>
-                        <div v-else>{{batter}}</div>
+                        <div v-if="index===lineupPositionHome"><b>{{batter.name}}</b></div>
+                        <div v-else>{{batter.name}}</div>
                     </div>
                 </td>
             </tr>
@@ -67,8 +67,28 @@
         }
 
         let lineups = {
-            home: ['Springer', 'Bichette', 'Guerrero', 'Hernandez', 'Gurriel', 'Tapia', 'Biggio', 'Espinal', 'Jansen'],
-            away: ['LeMahieu', 'Judge', 'Rizzo', 'Stanton', 'Gallo', 'Sanchez', 'Urshela', 'Torres', 'Gardner'],
+            home: [
+                { name: 'Springer' },
+                { name: 'Bichette' },
+                { name: 'Guerrero' },
+                { name: 'Hernandez' },
+                { name: 'Gurriel' },
+                { name: 'Tapia' },
+                { name: 'Chapman' },
+                { name: 'Espinal' },
+                { name: 'Jansen' },
+            ],
+            away: [
+                { name: 'LeMahieu' },
+                { name: 'Judge' },
+                { name: 'Rizzo' },
+                { name: 'Stanton' },
+                { name: 'Donaldson' },
+                { name: 'Hicks' },
+                { name: 'Gallo' },
+                { name: 'Kiner-Falefa' },
+                { name: 'Higashioka' },
+            ],
         }
 
         //set app options
