@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <meta charset="UTF-8">
-<title>Page Title</title>
+<title>Simple Baseball Sim Using Vue.js</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="stylesheet" href="">
 <style>
@@ -39,14 +39,14 @@
             <tr>
                 <td>
                     <div v-for="(batter, index) in lineups.away">
-                        <div v-if="index===lineupPositionAway"><b>{{batter.name}}</b></div>
-                        <div v-else>{{batter.name}}</div>
+                        <div v-if="index===lineupPosition.away"><b>{{batter.name}}</b> {{batter.PA}}</div>
+                        <div v-else>{{batter.name}} {{batter.PA}}</div>
                     </div>
                 </td>
                 <td>
                     <div v-for="(batter, index) in lineups.home">
-                        <div v-if="index===lineupPositionHome"><b>{{batter.name}}</b></div>
-                        <div v-else>{{batter.name}}</div>
+                        <div v-if="index===lineupPosition.home"><b>{{batter.name}}</b> {{batter.PA}}</div>
+                        <div v-else>{{batter.name}} {{batter.PA}}</div>
                     </div>
                 </td>
             </tr>
@@ -68,26 +68,26 @@
 
         let lineups = {
             home: [
-                { name: 'Springer' },
-                { name: 'Bichette' },
-                { name: 'Guerrero' },
-                { name: 'Hernandez' },
-                { name: 'Gurriel' },
-                { name: 'Tapia' },
-                { name: 'Chapman' },
-                { name: 'Espinal' },
-                { name: 'Jansen' },
+                { name: 'Springer', PA: 0 },
+                { name: 'Bichette', PA: 0 },
+                { name: 'Guerrero', PA: 0 },
+                { name: 'Hernandez', PA: 0 },
+                { name: 'Gurriel', PA: 0 },
+                { name: 'Tapia', PA: 0 },
+                { name: 'Chapman', PA: 0 },
+                { name: 'Espinal', PA: 0 },
+                { name: 'Jansen', PA: 0 },
             ],
             away: [
-                { name: 'LeMahieu' },
-                { name: 'Judge' },
-                { name: 'Rizzo' },
-                { name: 'Stanton' },
-                { name: 'Donaldson' },
-                { name: 'Hicks' },
-                { name: 'Gallo' },
-                { name: 'Kiner-Falefa' },
-                { name: 'Higashioka' },
+                { name: 'LeMahieu', PA: 0 },
+                { name: 'Judge', PA: 0 },
+                { name: 'Rizzo', PA: 0 },
+                { name: 'Stanton', PA: 0 },
+                { name: 'Donaldson', PA: 0 },
+                { name: 'Hicks', PA: 0 },
+                { name: 'Gallo', PA: 0 },
+                { name: 'Kiner-Falefa', PA: 0 },
+                { name: 'Higashioka', PA: 0 },
             ],
         }
 
@@ -100,8 +100,10 @@
                     teamAway: 'New York',
                     scoreData: scoreData,
                     lineups: lineups,
-                    lineupPositionHome: 0,
-                    lineupPositionAway: 0,
+                    lineupPosition: {
+                        home: 0,
+                        away: 0,
+                    },
                     nowBatting: 'away',
                     lastOutcome: 'Welcome to the game!',
                     gameOver: false,
@@ -139,19 +141,15 @@
                     return outcome;
                 },
                 updateGameData() {
-                    if (this.nowBatting === 'away') {
-                        if (this.lineupPositionAway === 8) {
-                            this.lineupPositionAway = 0;
-                        } else {
-                            this.lineupPositionAway++;
-                        }
+
+                    //increment lineup position
+                    this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].PA++;
+                    if (this.lineupPosition[this.nowBatting] === 8) {
+                        this.lineupPosition[this.nowBatting] = 0;
                     } else {
-                        if (this.lineupPositionHome === 8) {
-                            this.lineupPositionHome = 0;
-                        } else {
-                            this.lineupPositionHome++;
-                        }
+                        this.lineupPosition[this.nowBatting]++;
                     }
+
                     if (this.lastOutcome === "OUT") {
                         this.scoreData.outs++;
                         if (this.scoreData.outs % 3 === 0) {
