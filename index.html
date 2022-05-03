@@ -254,28 +254,20 @@
                 //this could be used to return HTML template
                 testMethod(lineup, lineupPosition) {
                     let returnX = "";
-                    lineup.forEach((element, index) => {
+                    lineup.forEach((player, index) => {
+                        returnX += `<div>`
                         if (index === lineupPosition) {
-                            returnX += `<div>
-                                <b>${element.name}</b>
-                                ab: ${element.AB} 
-                                h: ${element.H}
-                                d: ${element.D}
-                                t: ${element.T} 
-                                hr: ${element.HR} 
-                                bb: ${element.BB}
-                            </div>`
+                            returnX += `<b>${player.name}</b> `
                         } else {
-                            returnX += `<div>
-                                ${element.name}
-                                ab: ${element.AB} 
-                                h: ${element.H}
-                                d: ${element.D}
-                                t: ${element.T} 
-                                hr: ${element.HR} 
-                                bb: ${element.BB}
-                            </div>`
+                            returnX += `${player.name} `
                         }
+                        returnX += `ab: ${player.AB} 
+                            h: ${player.H}
+                            d: ${player.D}
+                            t: ${player.T} 
+                            hr: ${player.HR} 
+                            bb: ${player.BB}
+                        </div>`
                     });
                     return returnX
                 }
