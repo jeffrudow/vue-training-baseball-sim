@@ -48,15 +48,7 @@
                     </div>
                 </td>
                 <td>
-                    <div v-for="(batter, index) in lineups.home">
-                        <div v-if="index===lineupPosition.home"><b>{{batter.name}}</b> ab: {{batter.AB}} h: {{batter.H}}
-                            d: {{batter.D}}
-                            t: {{batter.T}} hr: {{batter.HR}} bb: {{batter.BB}}
-                        </div>
-                        <div v-else>{{batter.name}} ab: {{batter.AB}} h: {{batter.H}} d: {{batter.D}} t: {{batter.T}}
-                            hr: {{batter.HR}}
-                            bb: {{batter.BB}}</div>
-                    </div>
+                    <div v-html="testMethod(lineups.home, lineupPosition.home)"></div>
                 </td>
             </tr>
         </table>
@@ -104,6 +96,7 @@
         const BaseballSimApp = {
             data() {
                 return {
+                    title: "Foo",
                     appName: 'Baseball Sim',
                     teamHome: 'Toronto',
                     teamAway: 'New York',
@@ -257,6 +250,34 @@
                         this.gameOver = true;
                         this.scoreData.inning = 0;
                     }
+                },
+                //this could be used to return HTML template
+                testMethod(lineup, lineupPosition) {
+                    let returnX = "";
+                    lineup.forEach((element, index) => {
+                        if (index === lineupPosition) {
+                            returnX += `<div>
+                                <b>${element.name}</b>
+                                ab: ${element.AB} 
+                                h: ${element.H}
+                                d: ${element.D}
+                                t: ${element.T} 
+                                hr: ${element.HR} 
+                                bb: ${element.BB}
+                            </div>`
+                        } else {
+                            returnX += `<div>
+                                ${element.name}
+                                ab: ${element.AB} 
+                                h: ${element.H}
+                                d: ${element.D}
+                                t: ${element.T} 
+                                hr: ${element.HR} 
+                                bb: ${element.BB}
+                            </div>`
+                        }
+                    });
+                    return returnX
                 }
             },
             computed: {
@@ -264,9 +285,11 @@
                     let currentBatter = "Now Batting: "
                     currentBatter += `${this.nowBatting} - ${this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].name}`
                     return currentBatter;
-                },
+                }
             }
+
         };
+
 
         //create the app
         const app = Vue.createApp(BaseballSimApp);
