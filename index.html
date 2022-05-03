@@ -39,14 +39,16 @@
             <tr>
                 <td>
                     <div v-for="(batter, index) in lineups.away">
-                        <div v-if="index===lineupPosition.away"><b>{{batter.name}}</b> {{batter.PA}}</div>
-                        <div v-else>{{batter.name}} {{batter.PA}}</div>
+                        <div v-if="index===lineupPosition.away"><b>{{batter.name}}</b> pa: {{batter.PA}} h: {{batter.H}}
+                        </div>
+                        <div v-else>{{batter.name}} pa: {{batter.PA}} h: {{batter.H}}</div>
                     </div>
                 </td>
                 <td>
                     <div v-for="(batter, index) in lineups.home">
-                        <div v-if="index===lineupPosition.home"><b>{{batter.name}}</b> {{batter.PA}}</div>
-                        <div v-else>{{batter.name}} {{batter.PA}}</div>
+                        <div v-if="index===lineupPosition.home"><b>{{batter.name}}</b> pa: {{batter.PA}} h: {{batter.H}}
+                        </div>
+                        <div v-else>{{batter.name}} pa: {{batter.PA}} h: {{batter.H}}</div>
                     </div>
                 </td>
             </tr>
@@ -68,26 +70,26 @@
 
         let lineups = {
             home: [
-                { name: 'Springer', PA: 0 },
-                { name: 'Bichette', PA: 0 },
-                { name: 'Guerrero', PA: 0 },
-                { name: 'Hernandez', PA: 0 },
-                { name: 'Gurriel', PA: 0 },
-                { name: 'Tapia', PA: 0 },
-                { name: 'Chapman', PA: 0 },
-                { name: 'Espinal', PA: 0 },
-                { name: 'Jansen', PA: 0 },
+                { name: 'Springer', PA: 0, H: 0 },
+                { name: 'Bichette', PA: 0, H: 0 },
+                { name: 'Guerrero', PA: 0, H: 0 },
+                { name: 'Hernandez', PA: 0, H: 0 },
+                { name: 'Gurriel', PA: 0, H: 0 },
+                { name: 'Tapia', PA: 0, H: 0 },
+                { name: 'Chapman', PA: 0, H: 0 },
+                { name: 'Espinal', PA: 0, H: 0 },
+                { name: 'Jansen', PA: 0, H: 0 },
             ],
             away: [
-                { name: 'LeMahieu', PA: 0 },
-                { name: 'Judge', PA: 0 },
-                { name: 'Rizzo', PA: 0 },
-                { name: 'Stanton', PA: 0 },
-                { name: 'Donaldson', PA: 0 },
-                { name: 'Hicks', PA: 0 },
-                { name: 'Gallo', PA: 0 },
-                { name: 'Kiner-Falefa', PA: 0 },
-                { name: 'Higashioka', PA: 0 },
+                { name: 'LeMahieu', PA: 0, H: 0 },
+                { name: 'Judge', PA: 0, H: 0 },
+                { name: 'Rizzo', PA: 0, H: 0 },
+                { name: 'Stanton', PA: 0, H: 0 },
+                { name: 'Donaldson', PA: 0, H: 0 },
+                { name: 'Hicks', PA: 0, H: 0 },
+                { name: 'Gallo', PA: 0, H: 0 },
+                { name: 'Kiner-Falefa', PA: 0, H: 0 },
+                { name: 'Higashioka', PA: 0, H: 0 },
             ],
         }
 
@@ -142,14 +144,6 @@
                 },
                 updateGameData() {
 
-                    //increment lineup position
-                    this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].PA++;
-                    if (this.lineupPosition[this.nowBatting] === 8) {
-                        this.lineupPosition[this.nowBatting] = 0;
-                    } else {
-                        this.lineupPosition[this.nowBatting]++;
-                    }
-
                     if (this.lastOutcome === "OUT") {
                         this.scoreData.outs++;
                         if (this.scoreData.outs % 3 === 0) {
@@ -168,6 +162,7 @@
                         }
                     }
                     if (this.lastOutcome === "HR") {
+                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].H++;
                         const runsOnPlay = this.scoreData.base1 + this.scoreData.base2 + this.scoreData.base3 + 1;
                         this.scoreData.base3 = 0;
                         this.scoreData.base2 = 0;
@@ -179,6 +174,7 @@
                         }
                     }
                     if (this.lastOutcome === "3B") {
+                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].H++;
                         const runsOnPlay = this.scoreData.base1 + this.scoreData.base2 + this.scoreData.base3;
                         this.scoreData.base3 = 1;
                         this.scoreData.base2 = 0;
@@ -190,6 +186,7 @@
                         }
                     }
                     if (this.lastOutcome === "2B") {
+                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].H++;
                         const runsOnPlay = this.scoreData.base2 + this.scoreData.base3;
                         this.scoreData.base3 = this.scoreData.base1;
                         this.scoreData.base2 = 1;
@@ -201,6 +198,7 @@
                         }
                     }
                     if (this.lastOutcome === "1B") {
+                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].H++;
                         const runsOnPlay = this.scoreData.base3;
                         this.scoreData.base3 = this.scoreData.base2;
                         this.scoreData.base2 = this.scoreData.base1;
@@ -229,6 +227,15 @@
                             this.scoreData.runsHome += runsOnPlay;
                         }
                     }
+
+                    //increment lineup position
+                    this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].PA++;
+                    if (this.lineupPosition[this.nowBatting] === 8) {
+                        this.lineupPosition[this.nowBatting] = 0;
+                    } else {
+                        this.lineupPosition[this.nowBatting]++;
+                    }
+
                 },
                 checkGameOver() {
                     if (this.scoreData.inning > 9) {
