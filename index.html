@@ -215,14 +215,17 @@
                     }
                     if (this.lastOutcome === "BB") {
                         this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].BB++;
-                        const runsOnPlay = 0;
-                        const basesOnPlay = 1;
+                        let runsOnPlay = 0;
+                        let basesOnPlay = 1;
                         if (this.scoreData.base1 && this.scoreData.base2 && this.scoreData.base3) {
+                            this.scoreData.base3 = this.scoreData.base2;
+                            this.scoreData.base2 = this.scoreData.base1;
                             runsOnPlay = 1;
                             basesOnPlay += 3;
                         }
                         if (this.scoreData.base1 && this.scoreData.base2) {
                             this.scoreData.base3 = this.scoreData.base2;
+                            this.scoreData.base2 = this.scoreData.base1;
                             basesOnPlay += 2;
                         }
                         if (this.scoreData.base1) {
