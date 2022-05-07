@@ -17,8 +17,8 @@
         <hr>
         <h2>Score</h2>
         <div class="score">
-            <div>Away {{scoreData.runsAway}}</div>
-            <div>Home {{scoreData.runsHome}}</div>
+            <div>Away {{scoreData.runsAway}} | {{scoreData.basesAway}}</div>
+            <div>Home {{scoreData.runsHome}} | {{scoreData.basesHome}}</div>
             <div>Inn: {{scoreData.inning}} Outs: {{scoreData.outs}}</div>
             <div>1st: {{scoreData.base1}} 2nd: {{scoreData.base2}} 3rd: {{scoreData.base3}}</div>
         </div>
@@ -65,6 +65,8 @@
             base1: 0,
             base2: 0,
             base3: 0,
+            basesHome: 0,
+            basesAway: 0,
         }
 
         let lineups = {
@@ -144,6 +146,107 @@
                 },
                 updateGameData() {
 
+                    if (this.lastOutcome === "HR") {
+                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].AB++;
+                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].H++;
+                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].HR++;
+                        const runsOnPlay = this.scoreData.base1 + this.scoreData.base2 + this.scoreData.base3 + 1;
+                        const basesOnPlay = (this.scoreData.base1*3) + (this.scoreData.base2*2) + (this.scoreData.base3*1) + 4;
+                        this.scoreData.base3 = 0;
+                        this.scoreData.base2 = 0;
+                        this.scoreData.base1 = 0;
+                        if (this.nowBatting === 'away') {
+                            this.scoreData.runsAway += runsOnPlay;
+                            this.scoreData.basesAway += basesOnPlay;
+                        } else {
+                            this.scoreData.runsHome += runsOnPlay;
+                            this.scoreData.basesHome += basesOnPlay;
+                        }
+                    }
+                    if (this.lastOutcome === "3B") {
+                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].AB++;
+                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].H++;
+                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].T++;
+                        const runsOnPlay = this.scoreData.base1 + this.scoreData.base2 + this.scoreData.base3;
+                        const basesOnPlay = (this.scoreData.base1*3) + (this.scoreData.base2*2) + (this.scoreData.base3*1) + 3;
+                        this.scoreData.base3 = 1;
+                        this.scoreData.base2 = 0;
+                        this.scoreData.base1 = 0;
+                        if (this.nowBatting === 'away') {
+                            this.scoreData.runsAway += runsOnPlay;
+                            this.scoreData.basesAway += basesOnPlay;
+                        } else {
+                            this.scoreData.runsHome += runsOnPlay;
+                            this.scoreData.basesHome += basesOnPlay;
+                        }
+                    }
+                    if (this.lastOutcome === "2B") {
+                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].AB++;
+                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].H++;
+                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].D++;
+                        const basesOnPlay = (this.scoreData.base1*2) + (this.scoreData.base2*2) + (this.scoreData.base3*1) + 2;
+                        const runsOnPlay = this.scoreData.base2 + this.scoreData.base3;
+                        this.scoreData.base3 = this.scoreData.base1;
+                        this.scoreData.base2 = 1;
+                        this.scoreData.base1 = 0;
+                        if (this.nowBatting === 'away') {
+                            this.scoreData.runsAway += runsOnPlay;
+                            this.scoreData.basesAway += basesOnPlay;
+                        } else {
+                            this.scoreData.runsHome += runsOnPlay;
+                            this.scoreData.basesHome += basesOnPlay;
+                        }
+                    }
+                    if (this.lastOutcome === "1B") {
+                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].AB++;
+                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].H++;
+                        const basesOnPlay = (this.scoreData.base1*1) + (this.scoreData.base2*1) + (this.scoreData.base3*1) + 1;
+                        const runsOnPlay = this.scoreData.base3;
+                        this.scoreData.base3 = this.scoreData.base2;
+                        this.scoreData.base2 = this.scoreData.base1;
+                        this.scoreData.base1 = 1;
+                        if (this.nowBatting === 'away') {
+                            this.scoreData.runsAway += runsOnPlay;
+                            this.scoreData.basesAway += basesOnPlay;
+                        } else {
+                            this.scoreData.runsHome += runsOnPlay;
+                            this.scoreData.basesHome += basesOnPlay;
+                        }
+                    }
+                    if (this.lastOutcome === "BB") {
+                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].BB++;
+                        const runsOnPlay = 0;
+                        const basesOnPlay = 1;
+                        if (this.scoreData.base1 && this.scoreData.base2 && this.scoreData.base3) {
+                            runsOnPlay = 1;
+                            basesOnPlay += 3;
+                        }
+                        if (this.scoreData.base1 && this.scoreData.base2) {
+                            this.scoreData.base3 = this.scoreData.base2;
+                            basesOnPlay += 2;
+                        }
+                        if (this.scoreData.base1) {
+                            this.scoreData.base2 = this.scoreData.base1;
+                            basesOnPlay += 1;
+                        }
+                        this.scoreData.base1 = 1;
+                        if (this.nowBatting === 'away') {
+                            this.scoreData.runsAway += runsOnPlay;
+                            this.scoreData.basesAway += basesOnPlay;
+                        } else {
+                            this.scoreData.runsHome += runsOnPlay;
+                            this.scoreData.basesHome += basesOnPlay;
+                        }
+                    }
+
+                    //increment lineup position
+                    if (this.lineupPosition[this.nowBatting] === 8) {
+                        this.lineupPosition[this.nowBatting] = 0;
+                    } else {
+                        this.lineupPosition[this.nowBatting]++;
+                    }
+
+                    
                     if (this.lastOutcome === "OUT") {
                         this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].AB++;
                         this.scoreData.outs++;
@@ -162,87 +265,7 @@
                             }
                         }
                     }
-                    if (this.lastOutcome === "HR") {
-                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].AB++;
-                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].H++;
-                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].HR++;
-                        const runsOnPlay = this.scoreData.base1 + this.scoreData.base2 + this.scoreData.base3 + 1;
-                        this.scoreData.base3 = 0;
-                        this.scoreData.base2 = 0;
-                        this.scoreData.base1 = 0;
-                        if (this.nowBatting === 'away') {
-                            this.scoreData.runsAway += runsOnPlay;
-                        } else {
-                            this.scoreData.runsHome += runsOnPlay;
-                        }
-                    }
-                    if (this.lastOutcome === "3B") {
-                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].AB++;
-                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].H++;
-                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].T++;
-                        const runsOnPlay = this.scoreData.base1 + this.scoreData.base2 + this.scoreData.base3;
-                        this.scoreData.base3 = 1;
-                        this.scoreData.base2 = 0;
-                        this.scoreData.base1 = 0;
-                        if (this.nowBatting === 'away') {
-                            this.scoreData.runsAway += runsOnPlay;
-                        } else {
-                            this.scoreData.runsHome += runsOnPlay;
-                        }
-                    }
-                    if (this.lastOutcome === "2B") {
-                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].AB++;
-                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].H++;
-                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].D++;
-                        const runsOnPlay = this.scoreData.base2 + this.scoreData.base3;
-                        this.scoreData.base3 = this.scoreData.base1;
-                        this.scoreData.base2 = 1;
-                        this.scoreData.base1 = 0;
-                        if (this.nowBatting === 'away') {
-                            this.scoreData.runsAway += runsOnPlay;
-                        } else {
-                            this.scoreData.runsHome += runsOnPlay;
-                        }
-                    }
-                    if (this.lastOutcome === "1B") {
-                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].AB++;
-                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].H++;
-                        const runsOnPlay = this.scoreData.base3;
-                        this.scoreData.base3 = this.scoreData.base2;
-                        this.scoreData.base2 = this.scoreData.base1;
-                        this.scoreData.base1 = 1;
-                        if (this.nowBatting === 'away') {
-                            this.scoreData.runsAway += runsOnPlay;
-                        } else {
-                            this.scoreData.runsHome += runsOnPlay;
-                        }
-                    }
-                    if (this.lastOutcome === "BB") {
-                        this.lineups[this.nowBatting][this.lineupPosition[this.nowBatting]].BB++;
-                        const runsOnPlay = 0;
-                        if (this.scoreData.base1 && this.scoreData.base2 && this.scoreData.base3) {
-                            runsOnPlay = 1;
-                        }
-                        if (this.scoreData.base1 && this.scoreData.base2) {
-                            this.scoreData.base3 = this.scoreData.base2;
-                        }
-                        if (this.scoreData.base1) {
-                            this.scoreData.base2 = this.scoreData.base1;
-                        }
-                        this.scoreData.base1 = 1;
-                        if (this.nowBatting === 'away') {
-                            this.scoreData.runsAway += runsOnPlay;
-                        } else {
-                            this.scoreData.runsHome += runsOnPlay;
-                        }
-                    }
 
-                    //increment lineup position
-                    if (this.lineupPosition[this.nowBatting] === 8) {
-                        this.lineupPosition[this.nowBatting] = 0;
-                    } else {
-                        this.lineupPosition[this.nowBatting]++;
-                    }
 
                 },
                 checkGameOver() {
